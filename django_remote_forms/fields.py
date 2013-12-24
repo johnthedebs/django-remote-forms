@@ -4,6 +4,7 @@ from django.conf import settings
 from django.utils.datastructures import SortedDict
 
 from django_remote_forms import logger, widgets
+from django.utils import formats
 
 
 class RemoteField(object):
@@ -106,13 +107,17 @@ class RemoteTimeField(RemoteField):
                 if not len(field_dict['input_formats']):
                     if isinstance(field_dict['initial'], datetime.date):
                         field_dict['input_formats'] = settings.DATE_INPUT_FORMATS
+                        input_format = 'DATE_FORMAT'
                     elif isinstance(field_dict['initial'], datetime.time):
                         field_dict['input_formats'] = settings.TIME_INPUT_FORMATS
+                        input_format = 'TIME_FORMAT'
                     elif isinstance(field_dict['initial'], datetime.datetime):
                         field_dict['input_formats'] = settings.DATETIME_INPUT_FORMATS
+                        input_format = 'DATETIME_FORMAT'
+                    else:
+                        input_format = 'DATETIME_FORMAT'
 
-                input_format = field_dict['input_formats'][0]
-                field_dict['initial'] = field_dict['initial'].strftime(input_format)
+                    field_dict['initial'] = formats.date_format(field_dict['initial'], input_format)
 
         return field_dict
 
