@@ -1,6 +1,6 @@
 import datetime
 
-from django.utils.dates import MONTHS
+# from django.utils.dates import MONTHS
 from django.utils.datastructures import SortedDict
 
 
@@ -92,21 +92,7 @@ class RemoteTimeInput(RemoteInput):
 class RemoteDateInput(RemoteTimeInput):
     def as_dict(self):
         widget_dict = super(RemoteDateInput, self).as_dict()
-
         widget_dict['input_type'] = 'date'
-
-        current_year = datetime.datetime.now().year
-        widget_dict['choices'] = [{
-            'title': 'day',
-            'data': [{'key': x, 'value': x} for x in range(1, 32)]
-        }, {
-            'title': 'month',
-            'data': [{'key': x, 'value': y} for (x, y) in MONTHS.items()]
-        }, {
-            'title': 'year',
-            'data': [{'key': x, 'value': x} for x in range(current_year - 100, current_year + 1)]
-        }]
-
         return widget_dict
 
 

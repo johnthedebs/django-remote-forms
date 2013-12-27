@@ -29,7 +29,7 @@ class RemoteField(object):
         field_dict['title'] = self.field.__class__.__name__
         field_dict['required'] = self.field.required
         field_dict['label'] = self.field.label
-        field_dict['initial'] = self.form_initial_data or self.field.initial
+        field_dict['initial'] = self.form_initial_data if self.form_initial_data is not None else self.field.initial
         field_dict['help_text'] = self.field.help_text
 
         field_dict['error_messages'] = self.field.error_messages
@@ -98,26 +98,26 @@ class RemoteTimeField(RemoteField):
 
         field_dict['input_formats'] = self.field.input_formats
 
-        if (field_dict['initial']):
+        if field_dict['initial']:
             if callable(field_dict['initial']):
                 field_dict['initial'] = field_dict['initial']()
 
             # If initial value is datetime then convert it using first available input format
-            if (isinstance(field_dict['initial'], (datetime.datetime, datetime.time, datetime.date))):
+            if isinstance(field_dict['initial'], (datetime.datetime, datetime.time, datetime.date)):
                 if not len(field_dict['input_formats']):
-                    if isinstance(field_dict['initial'], datetime.date):
+                    if isinstance(field_dict['initial'], datetime.datetime):
+                        field_dict['input_formats'] = settings.DATETIME_INPUT_FORMATS
+                    elif isinstance(field_dict['initial'], datetime.date):
                         field_dict['input_formats'] = settings.DATE_INPUT_FORMATS
-                        input_format = 'DATE_FORMAT'
                     elif isinstance(field_dict['initial'], datetime.time):
                         field_dict['input_formats'] = settings.TIME_INPUT_FORMATS
-                        input_format = 'TIME_FORMAT'
-                    elif isinstance(field_dict['initial'], datetime.datetime):
-                        field_dict['input_formats'] = settings.DATETIME_INPUT_FORMATS
-                        input_format = 'DATETIME_FORMAT'
-                    else:
-                        input_format = 'DATETIME_FORMAT'
 
-                    field_dict['initial'] = formats.date_format(field_dict['initial'], input_format)
+                input_format = field_dict['input_formats'][0]
+
+                try:
+                    field_dict['initial'] = field_dict['initial'].strftime(input_format)
+                except:
+                    field_dict['initial'] = field_dict['initial'].isoformat()
 
         return field_dict
 
