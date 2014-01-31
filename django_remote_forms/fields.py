@@ -280,3 +280,8 @@ class RemoteIPAddressField(RemoteCharField):
 class RemoteSlugField(RemoteCharField):
     def as_dict(self):
         return super(RemoteSlugField, self).as_dict()
+
+
+class RemoteMultiSelectFormField(RemoteField):
+    def as_dict(self):
+        return super(RemoteMultiSelectFormField, self).as_dict()

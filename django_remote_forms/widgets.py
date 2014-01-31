@@ -243,3 +243,9 @@ class RemoteSplitDateTimeWidget(RemoteMultiWidget):
 class RemoteSplitHiddenDateTimeWidget(RemoteSplitDateTimeWidget):
     def as_dict(self):
         return super(RemoteSplitHiddenDateTimeWidget, self).as_dict()
+
+
+class RemoteMultiSelectFormField(RemoteCheckboxSelectMultiple):
+    def as_dict(self):
+        widget_dict = super(RemoteMultiSelectFormField, self).as_dict()
+        return widget_dict
